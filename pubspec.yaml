@@ -32,7 +32,7 @@ dev_dependencies:
   firebase_auth:
   cloud_firestore:
   firebase_analytics:
-
+  google_sign_in:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

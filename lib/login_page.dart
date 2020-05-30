@@ -1,4 +1,5 @@
 
+import 'package:fireauth/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fireauth/home_page.dart';
@@ -14,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final AuthProviders authProviders = AuthProviders();
 
   @override
   void initState() {
@@ -43,6 +45,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         body: Builder(
@@ -57,18 +63,18 @@ class _LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       Image.asset(
                         "assets/flutter_1.png",
-                        height: 175,
-                        width: 175,
+                        height: deviceHeight * 0.20,
+                        width: deviceHeight * 0.20
                       ),
                       Icon(
                         Icons.add,
                         color: Colors.black,
-                        size: 50,
+                        size: deviceHeight * 0.15
                       ),
                       Image.asset(
                         "assets/firebase_logo.png",
-                        height: 175,
-                        width: 175,
+                        height: deviceHeight * 0.20,
+                        width: deviceHeight * 0.20
                       )
                     ],
                   ),
@@ -80,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                       SafeArea(
                           child: Center(
                               child: Container(
-                                  width: 360,
+                                  width: deviceWidth * 0.80,
                                   child: TextFormField(
                                     controller: emailController,
                                     validator: (value) {
@@ -126,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                       SafeArea(
                           child: Center(
                               child: Container(
-                                  width: 360,
+                                  width: deviceWidth * 0.80,
                                   child: TextField(
                                     autocorrect: true,
                                     obscureText: true,
@@ -195,7 +201,17 @@ class _LoginPageState extends State<LoginPage> {
                         height: 40,
                         width: 40,
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        authProviders.handleGoogleSignIn().then((userEmail) {
+                          if (userEmail != null) {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeApp(userEmail)));
+                          } else {
+                            Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text('Something went wrong, please try again!!!')));
+                          }
+
+                        });
+                      },
                     ),
                     InkWell(
                       child: Image.asset(
